@@ -1,0 +1,117 @@
+from tkcalendar import DateEntry
+from tkinter import *
+from tkinter import ttk
+from PIL import Image,ImageTk
+import CanteenAppPage4
+import datetime
+from datetime import datetime
+
+def Userdatetime(window):
+    User = Frame(window)
+    User.place(relwidth=1,relheight=1)
+    cal = DateEntry(User, width=12,
+    background='darkblue', foreground='white')
+    cal.place(x=205, y=100)
+    cal.set_date("12/11/19")
+    label1 = Label(User, text="Select a date: ", fg='black',
+                     font=("arial", 10,))
+    label1.place(x=100,y=100)
+    label2 = Label(User, text="Select a time: ", fg='black',
+                     font=("arial", 10,))
+    label2.place(x=100,y=130)
+    hour = StringVar(User)                                      # Create Tkinter variables for user input hour, min, AM/PM
+    minute = StringVar(User)
+    Ampm = StringVar(User)
+    hour_choices = range(1, 13, 1)                              # Choose from 1 to 12 for 'hour'
+    hour.set('-')                                               # set the default hour to Nil
+    popupMenu1 = OptionMenu(User, hour, *hour_choices)          # dropdown
+    popupMenu1.place(x=200, y=130)                              # where to place dropdown
+    min_choices = ("00",15,30,45)                               # Choose from "00,15,30,45" for 'minutes'
+    minute.set('-')                                             # set the default min to Nil
+    popupMenu2 = OptionMenu(User, minute, *min_choices)         # dropdown
+    popupMenu2.place(x=260, y=130)                              # where to place dropdown
+    Ampm_choices = ("AM","PM")                                  # Choose from "AM/PM"
+    Ampm.set("-")                                               # set the default to Nil
+    popupMenu3 = OptionMenu(User, Ampm, *Ampm_choices)          # dropdown
+    popupMenu3.place(x=310, y=130)                              # where to place dropdown
+    label3 = Label(User, text=":", fg='black',
+                   font=("arial", 12,))
+    label3.place(x=250, y=130)
+    button1 = Button(User,height=1, width=20,text="Check available stores", fg='white', bg='dark green', relief=RIDGE,
+                     font=("arial", 12),
+                     command=lambda: Foodusertime(window,cal.get(),hour.get(),minute.get(),Ampm.get()))    # Runs function "Foodusertime" using
+                                                                                                    # user's date and time input as parameters
+    button1.place(x=180, y=180)
+    exit_button = Button(User, text="Back to Main Menu", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14),command=lambda: User.place_forget())
+    exit_button.pack(fill=BOTH, side=BOTTOM)
+#--------------------------------------------------------------------------------------------------------------
+def Foodusertime(window,cal,userhr,usermin,userampm):           # Checks user's date and time inputs
+    try:
+        userdate = (cal)                                        # Stores date input into "userdate" variable
+        usertime = userhr + ":" +usermin + ":"+userampm      # Concatenates user's individual "hour", "min" and "AM"/"PM" inputs together to get time
+        userdate1 = datetime.strptime(userdate, "%m/%d/%y")     # uses datetime attribute to get only date, not time, also checks date format is m/d/y
+        userdate2 = userdate1.strftime("%d/%m/%y")              # Converts date format into DD/MM/YY format
+        userday = userdate1.strftime("%A")                      # Gets the day of the week from date input
+        if userhr not in ["1","2","3","4","5","6","7","8","9","10","11","12"]\
+                or usermin not in ["00","15","30","45"] \
+                or userampm not in ["AM","PM"]:             # Checks if User leaves the hour, min and am/pm buttons at default "-"
+            window = Tk()                                   # Pop-up window to prompt "Error"
+            window.geometry('500x200')
+            label0 = Label(window, text="Error, time input is invalid.\nPlease try again.", fg='black',
+                           font=("arial", 14,))
+            label0.pack(fill=BOTH)
+            Button1 = Button(window, text="Ok", fg="white", bg="black", font=("arial", 12), relief=GROOVE,
+                             command=window.destroy)
+            Button1.pack()
+        else:             # If user keys in date and time accurately, go back to page 2 showing that date and time has been changed,
+                          # user can then select stores
+            userhr = int(userhr)
+            usermin = int(usermin)
+            Foodusertime = Frame(window)
+            Foodusertime.place(relwidth=1, relheight=1)
+            time_label = Label(Foodusertime, text="Date and time has been changed to : " +
+                                          " "+str(userday)+","+" "+ str(userdate2)+","+" "+str(usertime), fg='white',
+                       bg='black', relief=SOLID,font=("arial", 12,))
+            time_label.pack(fill=BOTH, side=TOP)
+            global nice
+            nice = Image.open("foodbackground.jpg")
+            nice = nice.resize((600, 300), Image.ANTIALIAS)
+            nice = ImageTk.PhotoImage(nice)
+            nice_label = Label(Foodusertime, image=nice)
+            nice_label.pack()
+            label1 = Label(Foodusertime, text="Choose a store: ", fg='black',
+                       font=("arial", 16,))
+            label1.place(x=170, y=40)
+            button1 = Button(Foodusertime, height=1, width=20, text="Malay Cuisine", fg='white', bg='dark green', relief=RIDGE,
+                         font=("arial", 16), command=lambda: CanteenAppPage4.Mpage(window,userday,userdate2,usertime,userhr,userampm))
+            button1.place(x=125, y=105)
+            button2 = Button(Foodusertime, height=1, width=20, text="Chinese Food", fg='brown', bg='orange2', relief=RIDGE,
+                         font=("arial", 16), command=lambda: CanteenAppPage4.Cpage(window,userday,userdate2,usertime,userhr,usermin,userampm))
+            button2.place(x=125, y=150)
+            button3 = Button(Foodusertime, height=1, width=20, text="Western&Grill", fg='black', bg='gold2', relief=RIDGE,
+                         font=("arial", 16), command=lambda: CanteenAppPage4.Wpage(window,userday,userdate2,usertime,userhr,userampm))
+            button3.place(x=125, y=195)
+            button4 = Button(Foodusertime, height=1, width=20, text="Quench", fg='cyan', bg='steel blue', relief=RIDGE,
+                         font=("arial", 16), command=lambda: CanteenAppPage4.Dpage(window,userday,userdate2,usertime,userhr,userampm))
+            button4.place(x=125, y=240)
+            button5 = Button(Foodusertime, height=1, width=20, text="McDonalds", fg='gold2', bg='red2', relief=RIDGE,
+                             font=("arial", 16), command=lambda: CanteenAppPage4.MDpage(window,userday,userdate2,usertime,userhr,usermin,userampm))
+            button5.place(x=125, y=285)
+            exit_button = Button(Foodusertime, text="Undo", fg='black', bg='deep sky blue', relief=GROOVE,
+                             font=("arial", 14), command=lambda: Foodusertime.place_forget())
+            exit_button.pack(fill=BOTH, side=BOTTOM)
+    except:                     # Catches bad date input by user
+        window = Tk()
+        window.geometry('500x200')
+        label0 = Label(window, text="Error, date input is invalid.\nPlease try again.", fg='black',
+                   font=("arial", 14,))
+        label0.pack(fill=BOTH)
+        Button1 = Button(window, text="Ok", fg="white",bg="black",font=("arial",12), relief=GROOVE,command=window.destroy)
+        Button1.pack()
+
+
+
+
+
+

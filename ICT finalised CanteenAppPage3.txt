@@ -1,0 +1,476 @@
+from tkinter import *
+from PIL import Image, ImageTk
+from datetime import datetime                       # imported datetime class from datetime module
+
+now = datetime.now()                                # use now() method to get datetime object and assign it to 'now' variable
+day = datetime.now()
+current_date = now.strftime("%d/%m/%y")             # Change current date into DD/MM/YY format
+current_day = now.strftime("%A")                    # Get current day of the week(Monday,Tuesday,etc.)
+current_time = now.strftime("%I:%M:%p")             # Change time format to 12-hour time format
+hour = current_time[0:2]                            # Use String slicing to get "hour" for comparison with stall opening hours later
+print(hour)
+hour = int(hour)                                    # Converting "hour" into intger from string, for comparison later
+min = current_time[3:5]                             # Use String slicing to get "minutes" for comparison with stall opening hours later
+print(min)
+ampm = current_time[6:]                             # Use String slicing to get "AM" or "PM" for comparison with stall opening hours later
+print(ampm)
+
+######################################################################################################################
+# Malay Stall, opens from Mon-Fri 12pm-8pm\n"
+Mophrs = "Opens Mondays-Fridays 12pm-8pm"                                           # Opening hours of stall
+Mmon = {"Nasi Lemak": ('\t\t$3.50'), "Mee Rebus": ('\t\t3.80'),                     # Monday Menu
+        "Mee Soto": ('\t\t$3.50'),","                                                   
+        "Monday Special: \nAyam Penyet": ('\t\t$4.00')}
+Mdates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]                   # Days where the stall is open
+Mtues = {"Nasi Lemak": ('\t\t$3.50'), "Mee Rebus": ('\t\t$3.80'),                   # Tuesday Menu
+         "Mee Soto": ('\t\t$3.50'),
+         "Tuesday Special: \nMee Goreng": ('\t\t$3.00')}
+Mwedthur = {"Nasi Lemak": ('\t\t$3.50'), "Mee Rebus": ('\t\t$3.80'),                # Wednesday-Thursday Menu
+            "Mee Soto": ('\t\t$3.50')}
+Mfri = {"Nasi Lemak": ('\t\t$3.50'), "Mee Rebus": ('\t\t$3.80'),                    # Friday Menu
+        "Mee Soto": ('\t\t$3.50'),
+        "Friday Special: \nBeef Rendang with Rice": ('\t\t$4.00')}
+
+Mlist = {"Monday": Mmon, "Tuesday": Mtues, ("Wednesday", "Thursday"): Mwedthur,      # Selects which menu to display based on day of the week
+         "Friday": Mfri}
+######################################################################################################################
+
+def Mopclo():                         # Checks if stall is open or closed
+    if current_day in Mdates:
+        if (hour == 12) and ampm == 'PM':
+            return "Stall Open"
+        elif (1 <= hour <= 7) and ampm == 'PM':
+            return "Stall Open"
+        else:
+            return "Stall closed"
+    else:
+        return "Stall closed"
+
+
+def Mlistfood():                    # If stall is open, display food menu, else, do not show menu and would display "Empty"
+    if Mopclo() == "Stall Open":
+        return Mfoodday()
+    else:
+        return "Empty"
+
+
+def Mfoodday():                    # Returns menu based on current day of the week
+    if current_day == "Monday":
+        return Mlist["Monday"]
+    elif current_day == "Tuesday":
+        return Mlist["Tuesday"]
+    elif current_day == "Wednesday" or current_day == "Thursday":
+        return Mlist[("Wednesday", "Thursday")]
+    else:
+        return Mlist["Friday"]
+
+######################################################################################################################
+# Chinese Stall, opens Mon-Thurs 10am-12:30am
+Cophrs = "Opens Monday-Thursdays 10am-12:30am"
+Cdates = ["Monday", "Tuesday", "Wednesday", "Thursday"]
+Ctuesthur = {"Wanton Noodles": ('\t\t$3.80'), "Dumpling Soup": ('\t\t$3.50'), "Ban Mian": ('\t\t$3.30'),
+             "Minced Meat Noodles": ('\t$4.00'), "Hor Fun": ('\t\t\t$4.00')}
+Cmon = {"Wanton Noodles": ('\t\t\t$3.80'),
+        "Dumpling Soup": ('\t\t\t$3.50'),
+        "Ban Mian": ('\t\t\t$3.30'),
+        "Minced Meat Noodles": ('\t\t$4.00'), "Hor Fun": ('\t\t\t\t$4.00'),
+        "Monday Special: \nShrimp Paste Chicken with rice": ('\t$4.50')}
+Clist = {"Monday": Cmon, ("Tuesday", "Wednesday", "Thursday"): Ctuesthur}
+######################################################################################################################
+
+def Copclo():
+    if current_day in Cdates:
+        if (10 <= hour <= 11) and ampm == 'AM':
+            return "Stall Open"
+        elif (hour==12) and ampm == 'PM':
+            return "Stall Open"
+        elif (1<=hour<=11) and ampm == 'PM':
+            return "Stall Open"
+        elif (hour == 12) and (00 <= int(min) <= 30) and ampm == 'AM':
+            return "Stall Open"
+        else:
+            return "Stall closed"
+    elif current_day == "Friday":
+        if (hour == 12) and (00 <= int(min) <= 30) and ampm == 'AM':
+            return "Stall Open"
+        else:
+            return "Stall closed"
+    else:
+        return "Stall closed"
+
+def Clistfood():
+    if Copclo() == "Stall Open":
+        return Cfoodday()
+    else:
+        return "Empty"
+
+
+def Cfoodday():
+    if current_day == "Monday":
+        return Clist["Monday"]
+    elif current_day in ["Tuesday", "Wednesday", "Thursday"]:
+        return Clist[("Tuesday", "Wednesday", "Thursday")]
+
+######################################################################################################################
+# Western Stall, opens from Mon-Wed 8am-8pm, Fri 11am-8pm
+# Breakfast Menu available only on Mon-Wed 8am-12pm,
+Wophrs = "Opens Mondays-Wednesdays 8am-8pm, Friday 11am-8pm" \
+         "\nBreakfast Menu available only on Mon-Wed 8am-12pm"
+Wdates = ["Monday", "Tuesday", "Wednesday", "Friday"]
+Wmonwed = {"Chargrilled Chicken": ('\t$4.00'), "Chicken Chop": ('\t\t$4.00'), "Chicken Burger": ('\t\t$3.50'),
+           "Spaghetti Carbonara": ('\t$3.50')}
+Wfri = {"Chargrilled Chicken": ('\t$4.00'), "Chicken Chop": ('\t\t$4.00'), "Chicken Burger": ('\t\t$3.50'),
+        "Spaghetti Carbonara": ('\t$3.50'), "Friday Special: \nAglio Olio": ('\t\t$3.50')}
+Wbfast = {"Egg&Tuna Sandwich": ('\t$2.00'), "Ham&Cheese Sandwich": ('\t$2.00'), "Breakfast Set": ('\t\t$4.00'),
+          "Egg's Benedict": ('\t\t$4.50')}
+Wlist = {("Monday", "Tuesday", "Wednesday"): Wmonwed, "Friday": Wfri, "Breakfast": Wbfast}
+######################################################################################################################
+
+def Wopclo():
+    if current_day not in Wdates:
+        return "Store closed"
+    elif current_day in Wdates:
+        if current_day == "Friday":
+            if (hour == 11) and ampm == 'AM':
+                return "Stall Open"
+            elif (hour == 12) and ampm == 'PM':
+                return "Stall Open"
+            elif (1 <= hour <= 7) and ampm == 'PM':
+                return "Stall Open"
+            else:
+                return "Stall closed"
+        elif current_day in ["Monday", "Tuesday", "Wednesday"]:
+            if (8 <= hour <= 11) and ampm == 'AM':
+                return "Stall Open"
+            elif (hour == 12) and ampm == 'PM':
+                return "Stall Open"
+            elif (1 <= hour <= 7) and ampm == 'PM':
+                return "Stall Open"
+            else:
+                return "Stall closed"
+
+
+def Wlistfood():
+    if Wopclo() == "Stall Open":
+        return WFoodday()
+    else:
+        return "Empty"
+
+
+def WFoodday():
+    if current_day in ['Monday', 'Tuesday', 'Wednesday']:
+        if (8 <= hour <= 11) and ampm == 'AM':
+            return Wlist["Breakfast"]
+        else:
+            return Wlist[("Monday", "Tuesday", "Wednesday")]
+    else:
+        return Wlist["Friday"]
+
+######################################################################################################################
+# Drink Stall, opens Mon-Sundays 10am-2am
+Dophrs = "Opens Monday-Sundays 10am-2am"
+Ddates = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+Dmonsun = {"Kopi(H/C)": ("\t\t$1.20"), "Kopi O(H/C)": ("\t\t$1.10"), "Tea(H/C)": ("\t\t$1.20"),
+           "Tea O(H/C)": ("\t\t$1.10"),
+           "Milo(H/C)": ("\t\t$1.30"),
+           "Bandung": ("\t\t\t$1.30"), "Barley(H/C)": ("\t\t$1.10"), "Canned Drinks": ("\t\t$1.30")}
+Dopenhours = {"Monday-Sunday": "10:00:AM-10:00:PM"}
+Dlist = {("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"): Dmonsun}
+######################################################################################################################
+
+def Dopclo():
+    if (10 <= (hour) <= 11) and ampm == 'AM':
+        return "Stall Open"
+    elif (hour == 12):
+        return "Stall Open"
+    elif (1 <= (hour) <= 11) and ampm == 'PM':
+        return "Stall Open"
+    elif (hour == 1) and ampm == 'AM':
+        return "Stall Open"
+    else:
+        return "Stall closed"
+
+
+def Dlistfood():
+    if Dopclo() == "Stall Open":
+        return Dfoodday()
+    else:
+        return "Empty"
+
+
+def Dfoodday():
+    return Dlist[("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")]
+
+######################################################################################################################
+# McDonalds, opens Everyday 24hrs
+MDophrs = "Opens Everyday 24 hrs. Breakfast menu from 6am-11:30am"
+MDmenuinfo = "Meal includes medium-sized fries and drink\nUpsize for 50cents to get large-sized fries and drinks"
+MDlunchmenu = {"Fillet-0-fish": ('\t\t$2.50/$4.50(meal)'),
+               "McChicken": ('\t\t$2.50/$4.50(meal)'), "Double Cheeseburger": ('\t$2.50/$4.50(meal)'),
+                "McSpicy": ('\t\t\t$3.50/$5.50(meal)'), "Big Mac": ('\t\t\t$4.50/$6.10(meal)'),
+               "Quarter Pounder": ('\t\t$4.90/$6.90(meal)'),
+               "Angus Beef Burger": ('\t$5.50/$8.00(meal)'), "Buttermilk Chicken Burger": ('\t  $5.50/$8.00(meal)')}
+MDbfast = {"McWrap": ('\t\t\t\t$2.80/$4.50(meal)'), "Chicken McMuffin" :('\t\t\t$3.00/$4.80(meal)'), "Sausage McMuffin": ('\t\t\t$3.00/$4.80(meal)'),
+           "Sausage McMuffin w Egg": ('\t\t$3.50/$5.30(meal)'), "Hotcakes": ('\t\t\t$3.20/$4.90(meal)'), "Big Breakfast(already a meal)": ('\t\t$6.50'),
+           "Breakfast Deluxe(already a meal)": ('\t\t$8.20')}
+######################################################################################################################
+
+def MDlistfood():
+    if (6<=hour<=10) and ampm == 'AM':
+        return MDbfast
+    elif (hour==11) and (00<=int(min)<=30) and ampm == 'AM':
+        return MDbfast
+    else:
+        return MDlunchmenu
+
+# ------------------------Pages for each store------------------------------------------------------
+
+def Mpage(window):                              # "Malay Cuisine" Page, runs when user clicks on "Malay Cuisine" on Page 2
+    Mpage = Frame(window)
+    Mpage.place(relwidth=1, relheight=1)
+    # Get image for buttons
+    global ketupat
+    ketupat = Image.open("ketupat.jpg")
+    ketupat = ketupat.resize((70, 70), Image.ANTIALIAS)
+    ketupat = ImageTk.PhotoImage(ketupat)
+    ketupat_label = Label(Mpage, image=ketupat, bg='grey', fg='grey')
+    ketupat_label.place(x=380, y=190)
+    time_label = Label(Mpage, text=str(current_day) + "," + " " + str(current_date) + "," + " " + str(current_time),
+                       fg='white', bg='black', relief=SOLID,
+                       font=("arial", 12,))
+    time_label.pack(fill=BOTH)
+    Label2 = Label(Mpage, height=1, width=20, text="Malay Cuisine", fg='white', bg='dark green',
+                   font=("arial", 20, 'bold'))
+
+    Label2.place(x=80, y=50)
+    Label3 = Label(Mpage, height=1, width=30, text=Mophrs, fg='black',
+                   font=("arial", 10,))
+    Label3.place(x=125, y=90)
+    Label4 = Label(Mpage, height=1, width=30, text=Mopclo(), fg='black',
+                   font=("arial", 14, "underline"))
+    Label4.place(x=80, y=110)
+    if Mlistfood() == "Empty":          # If the function returns "Empty", food menu would not show and "Empty" would be shown on page
+        Label5 = Label(Mpage, height=1, width=30, text="-----Empty----", fg='black',
+                       font=("arial", 15))
+        Label5.place(x=80, y=150)
+    else:                               # If function does not return "Empty", display food menu on page based on the day of the week
+        Label5 = Label(Mpage, text=Mlistfood(), fg='black',
+                       font=("arial", 12, "italic"))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in Mlistfood().items())  # Formats the dictionary containing menu
+                                                                                        # to display nicely on page
+        Label5.place(x=80, y=150)
+        Label6 = Label(Mpage, text='Enter no. of pax queueing:', fg='black', font=('arial', 9))
+        Label6.place(x=50, y=300)
+        entry_1 = Entry(Mpage)                               # Entry widget where user can input how many people in the queue
+        entry_1.place(x=200, y=300)
+        Button1 = Button(Mpage, text='Calculate', fg='black', bg='SeaGreen1', font=('arial', 14),
+                         command=lambda: Waittime(entry_1.get()))        # This command gets the input of user to calculate waiting time later
+        Button1.place(x=330, y=285)
+    button1 = Button(Mpage, text="Back to previous page", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14), command=lambda: Mpage.place_forget())  # Upon button click, removes Mpage frame to show Page2
+    button1.pack(fill=BOTH, side=BOTTOM)
+
+
+def Cpage(window):                  # Chinese Food page, runs when user clicks on "Chinese Food" button on Page2
+    Cpage = Frame(window)
+    Cpage.place(relwidth=1, relheight=1)
+    time_label = Label(Cpage, text=str(current_day) + "," + " " + str(current_date) + "," + " " + str(current_time),
+                       fg='white', bg='black', relief=SOLID,
+                       font=("arial", 12,))
+    time_label.pack(fill=BOTH)
+    Label2 = Label(Cpage, height=1, width=20, text="Chinese Food", fg='brown', bg='orange2',
+                   font=("arial", 20, 'bold'))
+    Label2.place(x=80, y=50)
+    Label3 = Label(Cpage, height=1, width=30, text=Cophrs, fg='black',
+                   font=("arial", 10))
+    Label3.place(x=125, y=90)
+    Label4 = Label(Cpage, height=1, width=30, text=Copclo(), fg='black',
+                   font=("arial", 14, "underline"))
+    Label4.place(x=80, y=110)
+    if Clistfood() == "Empty":
+        Label5 = Label(Cpage, height=1, width=30, text="-----Empty----", fg='black',
+                       font=("arial", 15))
+        Label5.place(x=80, y=150)
+    else:
+        Label5 = Label(Cpage, text=Clistfood(), fg='black',
+                       font=("arial", 12, "italic"))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in Clistfood().items())
+        Label5.place(x=80, y=150)
+        Label6 = Label(Cpage, text='Enter no. of pax queueing:', fg='black', font=('arial', 9))
+        Label6.place(x=50, y=300)
+        entry_1 = Entry(Cpage)
+        entry_1.place(x=200, y=300)
+        Button1 = Button(Cpage, text='Calculate', fg='black', bg='SeaGreen1', font=('arial', 14),
+                         command=lambda: Waittime(entry_1.get()))
+        Button1.place(x=330, y=285)
+    button1 = Button(Cpage, text="Back to previous page", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14), command=lambda: Cpage.place_forget())
+    button1.pack(fill=BOTH, side=BOTTOM)
+
+
+def Wpage(window):  # Runs when user clicks on "Western&Grill" button on Page 2
+    Wpage = Frame(window)
+    Wpage.place(relwidth=1, relheight=1)
+    time_label = Label(Wpage, text=str(current_day) + "," + " " + str(current_date) + "," + " " + str(current_time),
+                       fg='white',
+                       bg='black', relief=SOLID,
+                       font=("arial", 12,))
+    time_label.pack(fill=BOTH)
+    Label2 = Label(Wpage, height=1, width=20, text="Western&Grill", fg='black', bg='gold2',
+                   font=("arial", 20, 'bold'))
+    Label2.place(x=80, y=50)
+    Label3 = Label(Wpage, height=3, width=80, text=Wophrs, fg='black',
+                   font=("arial", 10))
+    Label3.place(x=-85, y=80)
+    Label4 = Label(Wpage, height=1, width=30, text=Wopclo(), fg='black',
+                   font=("arial", 14, "underline"))
+    Label4.place(x=80, y=130)
+    if Wlistfood() == "Empty":
+        Label5 = Label(Wpage, height=1, width=30, text="-----Empty----", fg='black',
+                       font=("arial", 15))
+        Label5.place(x=80, y=170)
+    else:
+        Label5 = Label(Wpage, text=Wlistfood(), fg='black',
+                       font=("arial", 12, "italic"))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in Wlistfood().items())
+        Label5.place(x=100, y=170)
+        Label6 = Label(Wpage, text='Enter no. of pax queueing:', fg='black', font=('arial', 9))
+        Label6.place(x=50, y=300)
+        entry_1 = Entry(Wpage)
+        entry_1.place(x=200, y=300)
+        Button1 = Button(Wpage, text='Calculate', fg='black', bg='SeaGreen1', font=('arial', 14),
+                         command=lambda: Waittime(entry_1.get()))
+        Button1.place(x=330, y=285)
+    button1 = Button(Wpage, text="Back", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14), command=lambda: Wpage.place_forget())
+    button1.pack(fill=BOTH, side=BOTTOM)
+
+
+def Dpage(window):  # Runs when user clicks on "Quench" button on Page 2
+    Dpage = Frame(window)
+    Dpage.place(relwidth=1, relheight=1)
+    time_label = Label(Dpage, text=str(current_day) + "," + " " + str(current_date) + "," + " " + str(current_time),
+                       fg='white',
+                       bg='black', relief=SOLID,
+                       font=("arial", 12,))
+    time_label.pack(fill=BOTH)
+    Label2 = Label(Dpage, height=1, width=20, text="Quench", fg='cyan', bg='steel blue',
+                   font=("arial", 20, 'bold'))
+    Label2.place(x=80, y=50)
+    Label3 = Label(Dpage, height=1, width=80, text=Dophrs, fg='black',
+                   font=("arial", 10))
+    Label3.place(x=-85, y=90)
+    Label4 = Label(Dpage, height=1, width=30, text=Dopclo(), fg='black',
+                   font=("arial", 14, "underline"))
+    Label4.place(x=80, y=110)
+    if Dlistfood() == "Empty":
+        Label5 = Label(Dpage, height=1, width=30, text="-----Empty----", fg='black',
+                       font=("arial", 15))
+        Label5.place(x=80, y=150)
+    else:
+        Label5 = Label(Dpage, text=Dlistfood(), fg='black',
+                       font=("arial", 11, "italic"))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in Dlistfood().items())
+        Label5.place(x=125, y=140)
+        Label6 = Label(Dpage, text='Enter no. of pax queueing:', fg='black', font=('arial', 9))
+        Label6.place(x=50, y=300)
+        entry_1 = Entry(Dpage)
+        entry_1.place(x=200, y=300)
+        Button1 = Button(Dpage, text='Calculate', fg='black', bg='SeaGreen1', font=('arial', 14),
+                         command=lambda: Waittime(entry_1.get()))
+        Button1.place(x=330, y=285)
+    button1 = Button(Dpage, text="Back to previous page", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14), command=lambda: Dpage.place_forget())
+    button1.pack(fill=BOTH, side=BOTTOM)
+def MDpage(window):                                         # Runs when user clicks on "McDonalds" button on Page 2
+    MDpage = Frame(window)
+    MDpage.place(relwidth=1, relheight=1)
+    time_label = Label(MDpage, text=str(current_day) + "," + " " + str(current_date) + "," + " " + str(current_time),
+                       fg='white',
+                       bg='black', relief=SOLID,
+                       font=("arial", 12,))
+    time_label.pack(fill=BOTH)
+    Label2 = Label(MDpage, height=1, width=20, text="McDonalds", fg='gold2', bg='red2',
+                   font=("arial", 20, 'bold'))
+    Label2.place(x=80, y=30)
+    Label0 = Label(MDpage, text=MDophrs, fg='black',
+                       font=("arial", 10))
+    Label0.place(x=90, y=70)
+    if MDlistfood() == MDbfast:
+        Label4 = Label(MDpage, text="Currently serving Breakfast Menu\n Meal includes Hashbown and Coffee/Tea", fg='black',
+                           font=("arial", 10,'underline'))
+        Label4.place(x=120, y=90)
+        Label5 = Label(MDpage, text=MDlistfood(), fg='black',
+                       font=("arial", 11, 'italic'))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in MDlistfood().items())
+        Label5.place(x=80, y=140)
+    else:
+        Label3 = Label(MDpage, text=MDmenuinfo, fg='black',
+                       font=("arial", 10, 'underline'))
+        Label3.place(x=100, y=90)
+        Label5 = Label(MDpage, text=MDlistfood(), fg='black',
+                       font=("arial", 11, "italic"))
+        Label5['text'] = '\n'.join('{} {}'.format(k, d) for k, d in MDlistfood().items())
+        Label5.place(x=80, y=140)
+        Label6 = Label(MDpage, text='Enter no. of pax queueing:', fg='black', font=('arial', 9))
+        Label6.place(x=50, y=300)
+    entry_1 = Entry(MDpage)
+    entry_1.place(x=200, y=300)
+    Button1 = Button(MDpage, text='Calculate', fg='black', bg='SeaGreen1', font=('arial', 14),
+                         command=lambda: Waittime(entry_1.get()))
+    Button1.place(x=330, y=285)
+    button1 = Button(MDpage, text="Back to previous page", fg='black', bg='deep sky blue',
+                        relief=GROOVE,font=("arial", 14), command=lambda: MDpage.place_forget())
+    button1.pack(fill=BOTH, side=BOTTOM)
+
+def Waittime(numofppl):                # Calculates waiting time
+    try:
+        if int(numofppl) < 0:              # if user keys in negative number
+            window = Tk()
+            window.title("Waiting Time")
+            window.geometry('500x200')
+            label0 = Label(window, text="Error. The number of people cannot be negative!\nPlease try again.", fg='black',
+                           font=("arial", 14,))
+            label0.pack(fill=BOTH)
+            Button1 = Button(window, text="Ok", fg="white", bg="black", font=("arial", 12), relief=GROOVE,
+                             command=window.destroy)
+            Button1.pack()
+        elif int(numofppl) > 100:            # if user keys in a number too large
+            window = Tk()
+            window.title("Waiting Time")
+            window.geometry('500x200')
+            label0 = Label(window, text="Error. Are you sure there are that many people queueing?\nThe food must be really good!", fg='black',
+                           font=("arial", 14,))
+            label0.pack(fill=BOTH)
+            Button1 = Button(window, text="Ok", fg="white", bg="black", font=("arial", 12), relief=GROOVE,
+                             command=window.destroy)
+            Button1.pack()
+        else:                             # if user keys in appropriate number that is an integer
+            wait = int(numofppl) * 2
+            window = Tk()
+            window.title("Waiting Time")
+            window.geometry('500x200')
+            if wait > 60:                 # Show waiting time in Hrs and Mins if waiting time exceeds 60 mins
+                hr = str(wait // 60)
+                min = str(wait % 60)
+                label0 = Label(window, text="Your estimated waiting time is: " + str(hr) + "hr" + " " + str(min) + "mins",
+                           fg='black',
+                           font=("arial", 14,))
+                label0.pack(fill=BOTH)
+            else:                         # Show waiting time in Mins if waiting time is below 60 mins
+                label0 = Label(window, text="Your estimated waiting time is: " + str(wait) + "mins", fg='black',
+                           font=("arial", 14,))
+                label0.pack(fill=BOTH)
+            Button1 = Button(window, text="Ok", fg="white",bg="black",font=("arial",12), relief=GROOVE,command=window.destroy)
+            Button1.pack()
+
+    except:                  # Catches all bad inputs of user, like float numbers, special characters etc.
+        window = Tk()
+        window.title("Waiting Time")
+        window.geometry('500x200')
+        label0 = Label(window, text="Error, input is invalid. \nPlease try again", fg='black',
+                   font=("arial", 14,))
+        label0.pack(fill=BOTH)
+        Button1 = Button(window, text="Ok", fg="white", bg="black", font=("arial", 12), relief=GROOVE,
+                     command=window.destroy)
+        Button1.pack()

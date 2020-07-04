@@ -1,0 +1,54 @@
+from tkinter import *
+from datetime import datetime           #imported datetime class from datetime module
+from PIL import Image,ImageTk
+import CanteenAppPage3                              #to use later for button clicks
+now = datetime.now()                                #use now() method to get datetime object and assign it to 'now' variable
+day = datetime.now()
+current_date = now.strftime("%d/%m/%y")             #To change format of current date
+current_day = now.strftime("%A")                    #To get day of the week
+current_time = now.strftime("%I:%M:%p")             #use .strftime() method to change format of time to 12-hour format
+
+def Foodcurrenttime(window):
+                                                    #Create new frame "Foodcurrenttime" to display food stall names
+    Foodcurrenttime = Frame(window)
+    Foodcurrenttime.place(relwidth=1, relheight=1)
+    time_label = Label(Foodcurrenttime, text="Today is : "           # Using string concatenation to show current date, day, and time on top of page
+                                             + " "+str(current_day)
+                                             +"" ","+" "+ str(current_date)
+                                             +","+" "+str(current_time),
+                       fg='white', bg='black', relief=SOLID,
+                     font=("arial", 12,))
+    time_label.pack(fill=BOTH, side=TOP)
+    global nice                                  # Creates background image
+    nice = Image.open("foodbackground.jpg")
+    nice = nice.resize((600, 300), Image.ANTIALIAS)
+    nice = ImageTk.PhotoImage(nice)
+    nice_label = Label(Foodcurrenttime, image=nice)
+    nice_label.pack()
+    label1 = Label(Foodcurrenttime, text="Choose a store: ", fg='black',
+                     font=("arial", 16,))
+    label1.place(x=170,y=40)
+    button1 = Button(Foodcurrenttime,height=1, width=20,text="Malay Cuisine",fg='white', bg='dark green', relief=RIDGE,
+                     font=("arial", 16),command=lambda: CanteenAppPage3.Mpage(window))   # Runs "Mpage(window)" function on CanteenAppPage3 module
+                                                                                         # on button click
+    button1.place(x=125, y=105)
+    button2 = Button(Foodcurrenttime,height=1, width=20,text="Chinese Food", fg='brown', bg='orange2', relief=RIDGE,
+                     font=("arial", 16),command=lambda:CanteenAppPage3.Cpage(window))    # Runs "Cpage(window)" function on CanteenAppPage3 module
+                                                                                         # on button click
+    button2.place(x=125, y=150)
+    button3 = Button(Foodcurrenttime, height=1, width=20, text="Western&Grill", fg='black', bg='gold2', relief=RIDGE,
+                     font=("arial", 16),command=lambda:CanteenAppPage3.Wpage(window))    # Runs "Wpage(window)" function on CanteenAppPage3 module
+                                                                                         # on button click
+    button3.place(x=125, y=195)
+    button4 = Button(Foodcurrenttime, height=1, width=20, text="Quench", fg='cyan', bg='steel blue', relief=RIDGE,
+                     font=("arial", 16),command=lambda:CanteenAppPage3.Dpage(window))
+    button4.place(x=125, y=240)
+    button5 = Button(Foodcurrenttime, height=1, width=20, text="McDonalds", fg='gold2', bg='red2', relief=RIDGE,
+                     font=("arial", 16),command=lambda:CanteenAppPage3.MDpage(window))   # Runs "MDpage(window)" function on CanteenAppPage3 module
+                                                                                         # on button click
+    button5.place(x=125, y=285)
+    exit_button = Button(Foodcurrenttime, text="Back to Main Menu", fg='black', bg='deep sky blue', relief=GROOVE,
+                     font=("arial", 14),command=lambda: Foodcurrenttime.place_forget())     # Removes current frame to show CanteenApp Mainpage
+    exit_button.pack(fill=BOTH, side=BOTTOM)
+
+
